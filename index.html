@@ -1,1 +1,1123 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Boîtier Électronique — Présentation 3D</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0a0a0f;
+      --surface: #111118;
+      --surface2: #1a1a24;
+      --border: rgba(255,255,255,0.07);
+      --accent: #c8f542;
+      --accent2: #42f5c8;
+      --text: #e8e8f0;
+      --muted: #6b6b80;
+      --danger: #f54242;
+    }
 
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      overflow-x: hidden;
+    }
+
+    /* ─── NOISE OVERLAY ─── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 999;
+      opacity: 0.4;
+    }
+
+    /* ─── SCREENS ─── */
+    .screen { display: none; min-height: 100vh; }
+    .screen.active { display: flex; }
+
+    /* ══════════════════════════════════
+       HOME SCREEN
+    ══════════════════════════════════ */
+    #home {
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 4rem 2rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    #home .bg-grid {
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(var(--border) 1px, transparent 1px),
+        linear-gradient(90deg, var(--border) 1px, transparent 1px);
+      background-size: 60px 60px;
+      mask-image: radial-gradient(ellipse 80% 70% at 50% 50%, black 30%, transparent 100%);
+    }
+
+    #home .glow {
+      position: absolute;
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(200,245,66,0.06) 0%, transparent 70%);
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+
+    .home-inner {
+      position: relative;
+      text-align: center;
+      max-width: 720px;
+    }
+
+    .home-tag {
+      display: inline-block;
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--accent);
+      border: 1px solid rgba(200,245,66,0.3);
+      padding: 0.3rem 0.9rem;
+      border-radius: 2px;
+      margin-bottom: 2rem;
+      animation: fadeUp 0.6s ease both;
+    }
+
+    .home-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(3.5rem, 9vw, 7rem);
+      line-height: 0.95;
+      letter-spacing: 0.02em;
+      color: var(--text);
+      margin-bottom: 2rem;
+      animation: fadeUp 0.6s 0.1s ease both;
+    }
+
+    .home-title span {
+      color: var(--accent);
+      display: block;
+    }
+
+    .home-desc {
+      font-size: 1rem;
+      line-height: 1.8;
+      color: var(--muted);
+      max-width: 520px;
+      margin: 0 auto 3rem;
+      animation: fadeUp 0.6s 0.2s ease both;
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      background: var(--accent);
+      color: #0a0a0f;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 500;
+      font-size: 0.85rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 0.9rem 2.2rem;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s;
+      animation: fadeUp 0.6s 0.3s ease both;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-primary::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: white;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    .btn-primary:hover::after { opacity: 0.15; }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(200,245,66,0.3); }
+    .btn-primary:active { transform: translateY(0); }
+
+    .btn-arrow { font-size: 1.2rem; transition: transform 0.2s; }
+    .btn-primary:hover .btn-arrow { transform: translateX(4px); }
+
+    .home-meta {
+      margin-top: 5rem;
+      display: flex;
+      gap: 3rem;
+      justify-content: center;
+      animation: fadeUp 0.6s 0.4s ease both;
+    }
+
+    .home-meta-item {
+      text-align: center;
+    }
+
+    .home-meta-num {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2.2rem;
+      color: var(--accent);
+      line-height: 1;
+    }
+
+    .home-meta-label {
+      font-size: 0.7rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-top: 0.3rem;
+    }
+
+    /* ══════════════════════════════════
+       VIEWER SCREEN
+    ══════════════════════════════════ */
+    #viewer {
+      flex-direction: column;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* Top bar */
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 2rem;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface);
+      flex-shrink: 0;
+      z-index: 10;
+    }
+
+    .topbar-logo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.1rem;
+      letter-spacing: 0.15em;
+      color: var(--accent);
+    }
+
+    .topbar-back {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: none;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 0.4rem 1rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .topbar-back:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* Progress stepper */
+    .stepper {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      padding: 0 2rem;
+      flex-shrink: 0;
+      overflow-x: auto;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface);
+    }
+
+    .step-item {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.7rem 1.2rem;
+      cursor: pointer;
+      opacity: 0.4;
+      transition: opacity 0.3s;
+      white-space: nowrap;
+      font-size: 0.72rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      border-bottom: 2px solid transparent;
+      transition: all 0.2s;
+    }
+
+    .step-item.active {
+      opacity: 1;
+      border-bottom-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .step-item.done { opacity: 0.6; }
+
+    .step-num {
+      width: 20px; height: 20px;
+      border: 1px solid currentColor;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.65rem;
+      font-weight: 500;
+    }
+
+    .step-item.done .step-num {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: var(--bg);
+    }
+
+    .step-item.done .step-num::after { content: '✓'; }
+    .step-item.done .step-label { display: none; }
+    .step-item:not(.done):not(.active) .step-label { display: none; }
+    @media (min-width: 900px) {
+      .step-item .step-label { display: inline !important; }
+    }
+
+    /* Main content */
+    .viewer-body {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    /* 3D Canvas */
+    .canvas-area {
+      flex: 1;
+      position: relative;
+      background: var(--bg);
+    }
+
+    #three-canvas {
+      width: 100%; height: 100%;
+      display: block;
+    }
+
+    .canvas-hint {
+      position: absolute;
+      bottom: 1.5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 0.68rem;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      display: flex;
+      gap: 1.5rem;
+      pointer-events: none;
+    }
+
+    .canvas-hint span { display: flex; align-items: center; gap: 0.4rem; }
+
+    /* Loading overlay */
+    .loading-overlay {
+      position: absolute; inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: var(--bg);
+      z-index: 5;
+      transition: opacity 0.4s;
+    }
+
+    .loading-overlay.hidden { opacity: 0; pointer-events: none; }
+
+    .loader-ring {
+      width: 48px; height: 48px;
+      border: 2px solid var(--border);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin-bottom: 1rem;
+    }
+
+    .loading-text {
+      font-size: 0.72rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    /* Error overlay */
+    .error-overlay {
+      position: absolute; inset: 0;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: var(--bg);
+      z-index: 5;
+    }
+    .error-overlay.visible { display: flex; }
+    .error-icon { font-size: 3rem; margin-bottom: 1rem; }
+    .error-msg { font-size: 0.85rem; color: var(--danger); text-align: center; max-width: 300px; }
+    .error-sub { font-size: 0.72rem; color: var(--muted); margin-top: 0.5rem; text-align: center; }
+
+    /* Side panel */
+    .side-panel {
+      width: 360px;
+      flex-shrink: 0;
+      background: var(--surface);
+      border-left: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      padding: 2rem;
+      overflow-y: auto;
+    }
+
+    @media (max-width: 800px) {
+      .side-panel { width: 100%; border-left: none; border-top: 1px solid var(--border); max-height: 260px; }
+      .viewer-body { flex-direction: column; }
+    }
+
+    .panel-tag {
+      font-size: 0.65rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--accent2);
+      margin-bottom: 0.5rem;
+    }
+
+    .panel-step-num {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 4rem;
+      color: var(--border);
+      line-height: 1;
+      margin-bottom: -0.5rem;
+    }
+
+    .panel-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2rem;
+      letter-spacing: 0.05em;
+      color: var(--text);
+      margin-bottom: 1rem;
+      transition: all 0.3s;
+    }
+
+    .panel-desc {
+      font-size: 0.88rem;
+      line-height: 1.75;
+      color: var(--muted);
+      flex: 1;
+      transition: all 0.3s;
+    }
+
+    .panel-filename {
+      margin-top: 1.5rem;
+      padding: 0.6rem 0.8rem;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      font-size: 0.72rem;
+      font-family: monospace;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .panel-filename::before { content: '📦'; font-size: 0.9rem; }
+
+    .panel-actions {
+      margin-top: 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .btn-next {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--accent);
+      color: var(--bg);
+      border: none;
+      padding: 1rem 1.4rem;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 500;
+      font-size: 0.82rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-next:hover { background: #d4fc5a; box-shadow: 0 4px 20px rgba(200,245,66,0.25); }
+    .btn-next:disabled { opacity: 0.3; cursor: not-allowed; }
+    .btn-next:disabled:hover { background: var(--accent); box-shadow: none; }
+
+    .btn-final {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: transparent;
+      color: var(--accent2);
+      border: 1px solid var(--accent2);
+      padding: 0.8rem 1.4rem;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.78rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-final:hover { background: rgba(66,245,200,0.08); }
+
+    /* Final screen overlay */
+    #final-screen {
+      display: none;
+      position: fixed; inset: 0;
+      background: rgba(10,10,15,0.95);
+      z-index: 100;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      backdrop-filter: blur(10px);
+    }
+
+    #final-screen.active { display: flex; }
+
+    .final-inner {
+      max-width: 900px;
+      width: 100%;
+      display: flex;
+      gap: 3rem;
+      align-items: center;
+    }
+
+    @media (max-width: 800px) {
+      .final-inner { flex-direction: column; }
+    }
+
+    .final-canvas-wrap {
+      flex: 1;
+      height: 400px;
+      position: relative;
+      border: 1px solid var(--border);
+    }
+
+    #final-canvas { width: 100%; height: 100%; display: block; }
+    #final-loading { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+
+    .final-info { flex: 0 0 280px; }
+
+    .final-tag {
+      font-size: 0.65rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1rem;
+    }
+
+    .final-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2.8rem;
+      color: var(--text);
+      margin-bottom: 1rem;
+    }
+
+    .final-desc {
+      font-size: 0.85rem;
+      line-height: 1.75;
+      color: var(--muted);
+      margin-bottom: 2rem;
+    }
+
+    .btn-close-final {
+      background: none;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      padding: 0.7rem 1.4rem;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-close-final:hover { border-color: var(--text); color: var(--text); }
+
+    /* ─── ANIMATIONS ─── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .fade-in { animation: fadeUp 0.4s ease both; }
+  </style>
+</head>
+<body>
+
+<!-- ══════════════ HOME SCREEN ══════════════ -->
+<div id="home" class="screen active">
+  <div class="bg-grid"></div>
+  <div class="glow"></div>
+  <div class="home-inner">
+    <div class="home-tag">Projet de conception — Impression 3D</div>
+    <h1 class="home-title" id="home-title">Chargement…</h1>
+    <p class="home-desc" id="home-desc">Chargement du contenu…</p>
+    <button class="btn-primary" onclick="startPresentation()">
+      Voir la présentation
+      <span class="btn-arrow">→</span>
+    </button>
+    <div class="home-meta">
+      <div class="home-meta-item">
+        <div class="home-meta-num">5</div>
+        <div class="home-meta-label">Pièces</div>
+      </div>
+      <div class="home-meta-item">
+        <div class="home-meta-num">3D</div>
+        <div class="home-meta-label">Interactif</div>
+      </div>
+      <div class="home-meta-item">
+        <div class="home-meta-num">STL</div>
+        <div class="home-meta-label">Format</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ VIEWER SCREEN ══════════════ -->
+<div id="viewer" class="screen">
+  <div class="topbar">
+    <div class="topbar-logo" id="viewer-logo">Projet</div>
+    <div style="display:flex;align-items:center;gap:1rem;">
+      <span style="font-size:0.72rem;color:var(--muted);letter-spacing:0.08em;" id="counter-display"></span>
+      <button class="topbar-back" onclick="goHome()">← Accueil</button>
+    </div>
+  </div>
+
+  <div class="stepper" id="stepper"></div>
+
+  <div class="viewer-body">
+    <div class="canvas-area">
+      <canvas id="three-canvas"></canvas>
+      <div class="loading-overlay" id="loading-overlay">
+        <div class="loader-ring"></div>
+        <div class="loading-text">Chargement du modèle…</div>
+      </div>
+      <div class="error-overlay" id="error-overlay">
+        <div class="error-icon">⚠</div>
+        <div class="error-msg" id="error-msg">Impossible de charger le fichier STL.</div>
+        <div class="error-sub">Vérifiez que le serveur Python est lancé<br>et que le fichier existe dans /stl/</div>
+      </div>
+      <div class="canvas-hint">
+        <span>🖱 Clic + glisser : rotation</span>
+        <span>⚙ Molette : zoom</span>
+        <span>⇧ Shift + glisser : déplacer</span>
+      </div>
+    </div>
+    <div class="side-panel">
+      <div class="panel-tag" id="panel-tag">Pièce 1 sur 5</div>
+      <div class="panel-step-num" id="panel-step-num">01</div>
+      <div class="panel-title" id="panel-title">Chargement…</div>
+      <div class="panel-desc" id="panel-desc">Chargement du contenu…</div>
+      <div class="panel-filename" id="panel-filename">fichier.stl</div>
+      <div class="panel-actions">
+        <button class="btn-next" id="btn-next" onclick="nextStep()">
+          Suivant <span>→</span>
+        </button>
+        <button class="btn-final" onclick="showFinal()">
+          Voir l'assemblage final ✦
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ FINAL SCREEN ══════════════ -->
+<div id="final-screen">
+  <div class="final-inner">
+    <div class="final-canvas-wrap">
+      <canvas id="final-canvas"></canvas>
+      <div id="final-loading">
+        <div class="loader-ring"></div>
+        <div class="loading-text">Chargement…</div>
+      </div>
+    </div>
+    <div class="final-info">
+      <div class="final-tag">Assemblage complet</div>
+      <div class="final-title" id="final-title">Boîtier Final</div>
+      <div class="final-desc" id="final-desc">Description de l'assemblage final.</div>
+      <button class="btn-close-final" onclick="closeFinal()">✕ Fermer</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ SCRIPTS ══════════════ -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+// ─── Global State ───────────────────────────────────────────────
+let content = null;
+let currentStep = 0;
+let mainScene, mainCamera, mainRenderer, mainControls, mainMesh;
+let finalScene, finalCamera, finalRenderer, finalMesh;
+let isAnimating = false;
+
+// ─── Simple OrbitControls (inline, no external dep) ─────────────
+class SimpleOrbitControls {
+  constructor(camera, domElement) {
+    this.camera = camera;
+    this.domElement = domElement;
+    this.target = new THREE.Vector3();
+    this.spherical = new THREE.Spherical();
+    this.spherical.setFromVector3(camera.position.clone().sub(this.target));
+    this._dragging = false;
+    this._rightDrag = false;
+    this._lastX = 0;
+    this._lastY = 0;
+    domElement.addEventListener('mousedown', e => this._onDown(e));
+    domElement.addEventListener('mousemove', e => this._onMove(e));
+    domElement.addEventListener('mouseup', () => { this._dragging = false; this._rightDrag = false; });
+    domElement.addEventListener('wheel', e => this._onWheel(e), { passive: false });
+    domElement.addEventListener('contextmenu', e => e.preventDefault());
+    domElement.addEventListener('touchstart', e => this._onTouchStart(e), { passive: false });
+    domElement.addEventListener('touchmove', e => this._onTouchMove(e), { passive: false });
+    this._touchStart = null;
+  }
+
+  _onDown(e) {
+    this._dragging = true;
+    this._rightDrag = e.button === 2 || e.shiftKey;
+    this._lastX = e.clientX;
+    this._lastY = e.clientY;
+  }
+
+  _onMove(e) {
+    if (!this._dragging) return;
+    const dx = e.clientX - this._lastX;
+    const dy = e.clientY - this._lastY;
+    this._lastX = e.clientX;
+    this._lastY = e.clientY;
+    if (this._rightDrag) {
+      const panScale = 0.002 * this.spherical.radius;
+      const right = new THREE.Vector3().setFromMatrixColumn(this.camera.matrix, 0).multiplyScalar(-dx * panScale);
+      const up = new THREE.Vector3().setFromMatrixColumn(this.camera.matrix, 1).multiplyScalar(dy * panScale);
+      this.target.add(right).add(up);
+    } else {
+      this.spherical.theta -= dx * 0.005;
+      this.spherical.phi -= dy * 0.005;
+      this.spherical.phi = Math.max(0.05, Math.min(Math.PI - 0.05, this.spherical.phi));
+    }
+    this._update();
+  }
+
+  _onWheel(e) {
+    e.preventDefault();
+    this.spherical.radius *= 1 + e.deltaY * 0.001;
+    this.spherical.radius = Math.max(0.1, Math.min(1000, this.spherical.radius));
+    this._update();
+  }
+
+  _onTouchStart(e) {
+    if (e.touches.length === 1) {
+      this._dragging = true;
+      this._rightDrag = false;
+      this._lastX = e.touches[0].clientX;
+      this._lastY = e.touches[0].clientY;
+    }
+    this._touchStart = e.touches;
+  }
+
+  _onTouchMove(e) {
+    e.preventDefault();
+    if (e.touches.length === 1 && this._dragging) {
+      const dx = e.touches[0].clientX - this._lastX;
+      const dy = e.touches[0].clientY - this._lastY;
+      this._lastX = e.touches[0].clientX;
+      this._lastY = e.touches[0].clientY;
+      this.spherical.theta -= dx * 0.008;
+      this.spherical.phi -= dy * 0.008;
+      this.spherical.phi = Math.max(0.05, Math.min(Math.PI - 0.05, this.spherical.phi));
+      this._update();
+    }
+  }
+
+  _update() {
+    const pos = new THREE.Vector3().setFromSpherical(this.spherical).add(this.target);
+    this.camera.position.copy(pos);
+    this.camera.lookAt(this.target);
+  }
+
+  update() {}
+}
+
+// ─── STL Loader (binary + ASCII) ────────────────────────────────
+function parseSTL(buffer) {
+  // Detect binary vs ASCII
+  const header = new Uint8Array(buffer, 0, 80);
+  const numTriangles = new DataView(buffer).getUint32(80, true);
+  const binarySize = 84 + numTriangles * 50;
+
+  if (buffer.byteLength === binarySize && numTriangles > 0) {
+    return parseBinarySTL(buffer);
+  } else {
+    const text = new TextDecoder().decode(buffer);
+    if (text.trimStart().startsWith('solid')) {
+      try { return parseASCIISTL(text); } catch(e) {}
+    }
+    return parseBinarySTL(buffer);
+  }
+}
+
+function parseBinarySTL(buffer) {
+  const view = new DataView(buffer);
+  const numTriangles = view.getUint32(80, true);
+  const positions = new Float32Array(numTriangles * 9);
+  const normals = new Float32Array(numTriangles * 9);
+  let offset = 84;
+
+  for (let i = 0; i < numTriangles; i++) {
+    const nx = view.getFloat32(offset, true);
+    const ny = view.getFloat32(offset + 4, true);
+    const nz = view.getFloat32(offset + 8, true);
+    offset += 12;
+    for (let v = 0; v < 3; v++) {
+      const base = i * 9 + v * 3;
+      positions[base]     = view.getFloat32(offset, true);
+      positions[base + 1] = view.getFloat32(offset + 4, true);
+      positions[base + 2] = view.getFloat32(offset + 8, true);
+      normals[base]     = nx;
+      normals[base + 1] = ny;
+      normals[base + 2] = nz;
+      offset += 12;
+    }
+    offset += 2; // attribute byte count
+  }
+
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+  geo.setAttribute('normal', new THREE.BufferAttribute(normals, 3));
+  return geo;
+}
+
+function parseASCIISTL(text) {
+  const positions = [];
+  const normals = [];
+  const lines = text.split('\n');
+  let currentNormal = [0, 0, 0];
+
+  for (const line of lines) {
+    const l = line.trim();
+    if (l.startsWith('facet normal')) {
+      const parts = l.split(/\s+/);
+      currentNormal = [parseFloat(parts[2]), parseFloat(parts[3]), parseFloat(parts[4])];
+    } else if (l.startsWith('vertex')) {
+      const parts = l.split(/\s+/);
+      positions.push(parseFloat(parts[1]), parseFloat(parts[2]), parseFloat(parts[3]));
+      normals.push(...currentNormal);
+    }
+  }
+
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(positions), 3));
+  geo.setAttribute('normal', new THREE.BufferAttribute(new Float32Array(normals), 3));
+  return geo;
+}
+
+// ─── Scene setup ────────────────────────────────────────────────
+function createScene(canvas) {
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  renderer.outputEncoding = THREE.sRGBEncoding;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.2;
+  renderer.setClearColor(0x0a0a0f, 1);
+
+  const scene = new THREE.Scene();
+
+  // Lights
+  const ambient = new THREE.AmbientLight(0xffffff, 0.4);
+  scene.add(ambient);
+
+  const key = new THREE.DirectionalLight(0xc8f542, 1.2);
+  key.position.set(5, 8, 5);
+  key.castShadow = true;
+  scene.add(key);
+
+  const fill = new THREE.DirectionalLight(0x42f5c8, 0.4);
+  fill.position.set(-5, 2, -3);
+  scene.add(fill);
+
+  const rim = new THREE.DirectionalLight(0xffffff, 0.3);
+  rim.position.set(0, -5, -5);
+  scene.add(rim);
+
+  // Camera
+  const camera = new THREE.PerspectiveCamera(45, 1, 0.001, 10000);
+  camera.position.set(0, 0, 5);
+
+  return { renderer, scene, camera };
+}
+
+function resizeRenderer(renderer, camera, canvas) {
+  const w = canvas.clientWidth;
+  const h = canvas.clientHeight;
+  if (renderer.domElement.width !== w || renderer.domElement.height !== h) {
+    renderer.setSize(w, h, false);
+    camera.aspect = w / h;
+    camera.updateProjectionMatrix();
+  }
+}
+
+function fitCameraToObject(camera, geometry, controls) {
+  geometry.computeBoundingBox();
+  const box = geometry.boundingBox;
+  const center = new THREE.Vector3();
+  box.getCenter(center);
+  const size = new THREE.Vector3();
+  box.getSize(size);
+  const maxDim = Math.max(size.x, size.y, size.z);
+  const fov = camera.fov * (Math.PI / 180);
+  const dist = Math.abs(maxDim / 2 / Math.tan(fov / 2)) * 2.2;
+
+  camera.position.set(center.x + dist * 0.6, center.y + dist * 0.4, center.z + dist);
+  camera.lookAt(center);
+
+  if (controls) {
+    controls.target.copy(center);
+    controls.spherical.setFromVector3(camera.position.clone().sub(controls.target));
+  }
+}
+
+// ─── Load STL ────────────────────────────────────────────────────
+async function loadSTL(url) {
+  const resp = await fetch(url);
+  if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+  const buffer = await resp.arrayBuffer();
+  return parseSTL(buffer);
+}
+
+function buildMesh(geometry) {
+  const mat = new THREE.MeshStandardMaterial({
+    color: 0xd0d8e8,
+    metalness: 0.3,
+    roughness: 0.5,
+    envMapIntensity: 0.5
+  });
+  const mesh = new THREE.Mesh(geometry, mat);
+  mesh.castShadow = true;
+
+  // Center
+  geometry.computeBoundingBox();
+  const center = new THREE.Vector3();
+  geometry.boundingBox.getCenter(center);
+  mesh.position.sub(center);
+
+  return mesh;
+}
+
+// ─── Main viewer init ─────────────────────────────────────────────
+function initMainViewer() {
+  const canvas = document.getElementById('three-canvas');
+  const { renderer, scene, camera } = createScene(canvas);
+  mainScene = scene;
+  mainCamera = camera;
+  mainRenderer = renderer;
+  mainControls = new SimpleOrbitControls(camera, canvas);
+
+  // Grid
+  const grid = new THREE.GridHelper(50, 50, 0x1a1a24, 0x1a1a24);
+  grid.position.y = -5;
+  scene.add(grid);
+
+  function animate() {
+    requestAnimationFrame(animate);
+    resizeRenderer(mainRenderer, mainCamera, canvas);
+    if (mainMesh) mainMesh.rotation.y += 0.002;
+    mainRenderer.render(mainScene, mainCamera);
+  }
+  animate();
+}
+
+async function loadStepModel(step) {
+  const overlay = document.getElementById('loading-overlay');
+  const errorOv = document.getElementById('error-overlay');
+  overlay.classList.remove('hidden');
+  errorOv.classList.remove('visible');
+
+  if (mainMesh) {
+    mainScene.remove(mainMesh);
+    mainMesh.geometry.dispose();
+    mainMesh = null;
+  }
+
+  const url = `/stl/${encodeURIComponent(step.file)}`;
+  try {
+    const geo = await loadSTL(url);
+    mainMesh = buildMesh(geo);
+    mainScene.add(mainMesh);
+    fitCameraToObject(mainCamera, geo, mainControls);
+    overlay.classList.add('hidden');
+  } catch (err) {
+    overlay.classList.add('hidden');
+    document.getElementById('error-msg').textContent = `Impossible de charger : ${step.file}`;
+    errorOv.classList.add('visible');
+    console.error('STL load error:', err);
+  }
+}
+
+// ─── Final viewer ─────────────────────────────────────────────────
+function initFinalViewer() {
+  const canvas = document.getElementById('final-canvas');
+  const { renderer, scene, camera } = createScene(canvas);
+  finalScene = scene;
+  finalCamera = camera;
+  finalRenderer = renderer;
+  new SimpleOrbitControls(camera, canvas);
+
+  function animate() {
+    requestAnimationFrame(animate);
+    resizeRenderer(finalRenderer, finalCamera, canvas);
+    if (finalMesh) finalMesh.rotation.y += 0.003;
+    finalRenderer.render(finalScene, finalCamera);
+  }
+  animate();
+}
+
+async function loadFinalModel() {
+  const loadDiv = document.getElementById('final-loading');
+  loadDiv.style.display = 'flex';
+
+  if (finalMesh) {
+    finalScene.remove(finalMesh);
+    finalMesh.geometry.dispose();
+    finalMesh = null;
+  }
+
+  try {
+    const geo = await loadSTL(`/stl/${encodeURIComponent(content.final.file)}`);
+    finalMesh = buildMesh(geo);
+    finalScene.add(finalMesh);
+    fitCameraToObject(finalCamera, geo, null);
+    loadDiv.style.display = 'none';
+  } catch (err) {
+    loadDiv.innerHTML = '<div style="color:var(--danger);font-size:0.8rem;text-align:center">Fichier final.stl introuvable</div>';
+    console.error(err);
+  }
+}
+
+// ─── UI ───────────────────────────────────────────────────────────
+function buildStepper() {
+  const stepper = document.getElementById('stepper');
+  stepper.innerHTML = '';
+  content.steps.forEach((step, i) => {
+    const el = document.createElement('div');
+    el.className = 'step-item' + (i === currentStep ? ' active' : '') + (i < currentStep ? ' done' : '');
+    el.innerHTML = `<span class="step-num">${i < currentStep ? '' : i + 1}</span><span class="step-label">${step.title}</span>`;
+    el.addEventListener('click', () => { if (i <= currentStep) goToStep(i); });
+    stepper.appendChild(el);
+  });
+}
+
+function updatePanel() {
+  const step = content.steps[currentStep];
+  document.getElementById('panel-tag').textContent = `Pièce ${currentStep + 1} sur ${content.steps.length}`;
+  document.getElementById('panel-step-num').textContent = String(currentStep + 1).padStart(2, '0');
+  document.getElementById('panel-title').textContent = step.title;
+  document.getElementById('panel-desc').textContent = step.description;
+  document.getElementById('panel-filename').textContent = step.file;
+  document.getElementById('counter-display').textContent = `${currentStep + 1} / ${content.steps.length}`;
+
+  const btnNext = document.getElementById('btn-next');
+  if (currentStep >= content.steps.length - 1) {
+    btnNext.textContent = '';
+    btnNext.innerHTML = 'Voir l\'assemblage final ✦';
+    btnNext.onclick = showFinal;
+  } else {
+    btnNext.innerHTML = 'Suivant <span>→</span>';
+    btnNext.onclick = nextStep;
+  }
+}
+
+function goToStep(i) {
+  currentStep = i;
+  buildStepper();
+  updatePanel();
+  const step = content.steps[currentStep];
+  loadStepModel(step);
+}
+
+function nextStep() {
+  if (currentStep < content.steps.length - 1) {
+    goToStep(currentStep + 1);
+  }
+}
+
+function startPresentation() {
+  document.getElementById('home').classList.remove('active');
+  document.getElementById('viewer').classList.add('active');
+  currentStep = 0;
+  initMainViewer();
+  buildStepper();
+  updatePanel();
+  loadStepModel(content.steps[0]);
+}
+
+function goHome() {
+  document.getElementById('viewer').classList.remove('active');
+  document.getElementById('home').classList.add('active');
+  closeFinal();
+}
+
+function showFinal() {
+  document.getElementById('final-screen').classList.add('active');
+  if (!finalRenderer) {
+    initFinalViewer();
+  }
+  loadFinalModel();
+}
+
+function closeFinal() {
+  document.getElementById('final-screen').classList.remove('active');
+}
+
+// ─── Bootstrap ────────────────────────────────────────────────────
+async function init() {
+  try {
+    const resp = await fetch('/content.json');
+    content = await resp.json();
+
+    // Populate home
+    const p = content.project;
+    document.getElementById('home-title').innerHTML =
+      p.title.split(' ').slice(0, -1).join(' ') +
+      ' <span>' + p.title.split(' ').slice(-1)[0] + '</span>';
+    document.getElementById('home-desc').textContent = p.description;
+
+    // Populate final screen
+    document.getElementById('final-title').textContent = content.final.title;
+    document.getElementById('final-desc').textContent = content.final.description;
+
+    document.getElementById('viewer-logo').textContent = p.title;
+  } catch (err) {
+    console.error('Impossible de charger content.json', err);
+    document.getElementById('home-title').innerHTML = 'Boîtier <span>Électronique</span>';
+    document.getElementById('home-desc').textContent = 'Présentation 3D du projet de conception modulaire.';
+  }
+}
+
+init();
+</script>
+</body>
+</html>
