@@ -1,49 +1,55 @@
 {
   "project": {
-    "title": "Projet Boîte Électronique",
-    "subtitle": "Une conception modulaire pensée pour la précision et l'élégance industrielle.",
-    "description": "Ce projet présente le processus de conception d'un boîtier électronique modulaire, imprimé en 3D. Chaque composant a été conçu pour s'emboîter parfaitement, facilitant l'assemblage, la maintenance et l'intégration des composants électroniques. Explorez les différentes pièces qui composent ce système complet."
+    "title": "Boîtier Électronique Modulaire",
+    "subtitle": "Conception & Impression 3D",
+    "description": "Ce projet présente la conception d'un boîtier électronique modulaire entièrement imprimé en 3D. Chaque composant a été étudié pour faciliter l'assemblage, la maintenance et l'intégration des éléments électroniques. La structure modulaire permet une adaptabilité maximale tout en garantissant robustesse et précision dimensionnelle."
   },
   "steps": [
     {
       "id": "base",
-      "file": "_base.stl",
-      "title": "La Base",
+      "file": "base.stl",
+      "title": "Base",
+      "subtitle": "Structure porteuse",
       "step": 1,
-      "description": "La base constitue le fondement de l'ensemble du système. Conçue pour offrir une stabilité maximale, elle intègre des points de fixation précis et des guides d'alignement qui garantissent un assemblage sans jeu. Sa géométrie interne optimise la distribution des contraintes mécaniques."
+      "description": "La base constitue le fondement structurel de l'ensemble. Conçue pour offrir une stabilité maximale, elle intègre des points de fixation précis et des guides d'alignement qui garantissent un assemblage sans jeu. Sa géométrie interne optimise la distribution des contraintes mécaniques lors des différentes sollicitations d'usage."
     },
     {
       "id": "tiroir",
-      "file": "_tirroir.stl",
-      "title": "Le Tiroir",
+      "file": "tirroir.stl",
+      "title": "Tiroir",
+      "subtitle": "Module d'accès coulissant",
       "step": 2,
-      "description": "Le tiroir est un mécanisme coulissant qui permet un accès rapide aux composants internes sans démontage complet du boîtier. Ses rails de précision assurent un glissement fluide et une extraction en douceur, même après de nombreux cycles d'utilisation."
+      "description": "Le tiroir est un mécanisme coulissant permettant un accès rapide aux composants internes sans démontage complet du boîtier. Ses rails de précision assurent un glissement fluide et une extraction maîtrisée, même après de nombreux cycles d'utilisation. La tolérance de fabrication a été optimisée pour l'impression FDM."
     },
     {
       "id": "plaque_ecran",
-      "file": "_plaque ecran.stl",
-      "title": "La Plaque Écran",
+      "file": "plaque ecran.stl",
+      "title": "Plaque Écran",
+      "subtitle": "Interface d'affichage",
       "step": 3,
-      "description": "La plaque écran vient s'insérer avec précision pour accueillir l'afficheur du projet. Les découpes sont calibrées au dixième de millimètre pour un rendu propre et professionnel. Elle intègre également des passages de câbles discrets pour un câblage soigné."
+      "description": "La plaque écran s'insère avec précision pour accueillir l'afficheur du projet. Les découpes sont calibrées au dixième de millimètre pour un rendu propre et professionnel. Elle intègre également des passages de câbles discrets permettant un câblage soigné et une maintenance facilitée."
     },
     {
       "id": "cache",
-      "file": "_cache.stl",
-      "title": "Le Cache",
+      "file": "cache.stl",
+      "title": "Cache",
+      "subtitle": "Fermeture et protection",
       "step": 4,
-      "description": "Le cache assure la protection de l'ensemble des composants électroniques. Il complète hermétiquement le boîtier tout en permettant une ventilation contrôlée. Sa surface supérieure lisse offre une finition esthétique soignée, idéale pour une présentation professionnelle."
+      "description": "Le cache assure la protection de l'ensemble des composants électroniques. Il complète le boîtier tout en permettant une ventilation contrôlée. Sa surface lisse offre une finition esthétique soignée, idéale pour une présentation professionnelle ou une intégration dans un environnement industriel."
     },
     {
       "id": "boite_terre",
-      "file": "_boite a terre2.0.stl",
-      "title": "La Boîte à Terre",
+      "file": "boite a terre2.0.stl",
+      "title": "Boîte à Terre",
+      "subtitle": "Mise à la masse — v2.0",
       "step": 5,
-      "description": "La boîte à terre est l'élément final de l'assemblage. Elle assure la connexion à la masse électrique du système et garantit la conformité aux normes de sécurité électrique. Sa version 2.0 intègre une amélioration significative des points de contact et une meilleure résistance mécanique."
+      "description": "La boîte à terre est l'élément final de l'assemblage. Elle assure la connexion à la masse électrique du système et garantit la conformité aux normes de sécurité électrique. Cette version 2.0 intègre une amélioration significative des points de contact et une meilleure résistance mécanique aux vibrations."
     }
   ],
   "final": {
     "file": "final.stl",
     "title": "Assemblage Final",
-    "description": "Voici le boîtier complet, toutes pièces assemblées. Ce résultat illustre la cohérence de la conception modulaire : chaque pièce s'emboîte parfaitement pour former un ensemble robuste, compact et esthétique. Ce boîtier est prêt pour l'intégration des composants électroniques."
+    "subtitle": "Produit complet",
+    "description": "Voici le boîtier complet, toutes pièces assemblées. Ce résultat illustre la cohérence de la démarche modulaire : chaque pièce s'emboîte avec précision pour former un ensemble robuste, compact et soigné. Ce boîtier est prêt pour l'intégration des composants électroniques et la mise en production."
   }
 }
